@@ -2,7 +2,7 @@ const { performance, PerformanceObserver } = require('perf_hooks')
 
 function log (event) {
   process.stdout.write(
-    JSON.stringify({
+    "FAASTERMETRICS" + JSON.stringify({
       timestamp: new Date().getTime(),
       now: performance.now(),
       ...event
