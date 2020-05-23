@@ -60,14 +60,28 @@ function serverlessRouter (routerFn) {
   })
 
   router.use(logger, handleErrors, hybridBodyParser())
-  router.addRpcHandler = handler =>
-    router.post('/call', async (ctx, next) => {
-      ctx.lib.mark('startRpcHandler')
-      ctx.body = await handler(ctx.request.body, ctx.lib)
-      ctx.lib.mark('endRpcHandler')
+
+  const wrapHandler = (m, r, h) =>
+    router[m](r, async (ctx, next) => {
+      ctx.lib.mark(`start:${m}:${r}`)
+      await h(ctx, next)
+      ctx.lib.mark(`end:${m}:${r}`)
     })
 
-  routerFn(router)
+  routerFn({
+    get: (r, h) => wrapHandler('get', r, h),
+    post: (r, h) => wrapHandler('post', r, h),
+    put: (r, h) => wrapHandler('put', r, h),
+    patch: (r, h) => wrapHandler('patch', r, h),
+    del: (r, h) => wrapHandler('del', r, h),
+    all: (r, h) => wrapHandler('all', r, h),
+    addRpcHandler: handler =>
+      router.post('/call', async (ctx, next) => {
+        ctx.lib.mark('startRpcHandler')
+        ctx.body = await handler(ctx.request.body, ctx.lib)
+        ctx.lib.mark('endRpcHandler')
+      })
+  })
 
   app.use(router.routes())
   app.use(router.allowedMethods())

@@ -14,10 +14,10 @@ function log (event) {
 
 new PerformanceObserver(list =>
   list.getEntries().forEach(perf => {
-    const [fn, m] = perf.name.split(':', 2)
+    const perfName = perf.name.split(':')
     log({
-      fn,
-      perf: { mark: m, ...perf }
+      fn: perfName.shift(),
+      perf: { mark: perfName.join(':'), ...perf }
     })
   })
 ).observe({ entryTypes: ['mark', 'function'] })
