@@ -10,9 +10,21 @@ const qs = require('qs')
 const log = require('./log')
 const helper = require('./helper')
 const performance = require('./performance')
+const call = require('./call')
+
+function createContext (fn) {
+  return {
+    log: e => log(Object.assign({ fn }, e || {})),
+    call: (f, payload) => call(f, Object.assign({ caller: fn }, payload || {})),
+    mark: m => performance.mark(`${fn}:${m}`)
+  }
+}
 
 function logger (ctx, next) {
-  log(Object.assign({}, _.pick(ctx, ['method', 'originalUrl', 'headers'])))
+  const fn = helper.getFnName(ctx)
+  log(Object.assign({ fn }, _.pick(ctx, ['method', 'originalUrl', 'headers'])))
+  ctx.params.fn = fn
+  ctx.lib = createContext(fn)
   return next()
 }
 
@@ -50,9 +62,9 @@ function serverlessRouter (routerFn) {
   router.use(logger, handleErrors, hybridBodyParser())
   router.addRpcHandler = handler =>
     router.post('/call', async (ctx, next) => {
-      performance.mark(`${helper.getFnName(ctx)}:startRpcHandler`)
-      ctx.body = await handler(ctx.request.body)
-      performance.mark(`${helper.getFnName(ctx)}:endRpcHandler`)
+      ctx.lib.mark('startRpcHandler')
+      ctx.body = await handler(ctx.request.body, ctx.lib)
+      ctx.lib.mark('endRpcHandler')
     })
 
   routerFn(router)

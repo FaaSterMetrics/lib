@@ -13,7 +13,13 @@ function log (event) {
 }
 
 new PerformanceObserver(list =>
-  list.getEntries().forEach(perf => log({ perf }))
+  list.getEntries().forEach(perf => {
+    const [fn, m] = perf.name.split(':', 2)
+    log({
+      fn,
+      perf: { mark: m, ...perf }
+    })
+  })
 ).observe({ entryTypes: ['mark', 'function'] })
 
 log({ coldstart: true })
