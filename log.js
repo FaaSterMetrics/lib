@@ -8,7 +8,7 @@ function log (event) {
         timestamp: new Date().getTime(),
         now: performance.now(),
         version: LIB_VERSION,
-        ...event
+        event: event
       }) +
       '\n'
   )
