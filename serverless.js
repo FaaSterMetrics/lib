@@ -9,6 +9,7 @@ const qs = require('qs')
 
 const log = require('./log')
 const helper = require('./helper')
+const performance = require('./performance')
 
 function logger (ctx, next) {
   log(Object.assign({}, _.pick(ctx, ['method', 'originalUrl', 'headers'])))
@@ -49,7 +50,9 @@ function serverlessRouter (routerFn) {
   router.use(logger, handleErrors, hybridBodyParser())
   router.addRpcHandler = handler =>
     router.post('/call', async (ctx, next) => {
+      performance.mark('startRpcHandler')
       ctx.body = await handler(ctx.request.body)
+      performance.mark('endRpcHandler')
     })
 
   routerFn(router)
