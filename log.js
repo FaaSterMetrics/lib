@@ -22,7 +22,7 @@ new PerformanceObserver(list =>
       perf: { mark: perfName.join(':'), ...perf }
     })
   })
-).observe({ entryTypes: ['mark', 'function'] })
+).observe({ entryTypes: ['mark', 'measure', 'function'] })
 
 log({ coldstart: true })
 

@@ -10,13 +10,19 @@ const endpoints = {
   google: process.env.GOOGLE_CLOUDFUNCTION_ENDPOINT
 }
 
-module.exports = async (fn, payload) => {
+module.exports = async (fn, contextId, payload) => {
   const provider = _.get(experiment, `program.functions.${fn}.provider`)
   if (!endpoints[provider]) throw new Error('unknown provider')
   const res = await fetch(`${endpoints[provider]}/${fn}/call`, {
     method: 'post',
     body: JSON.stringify(payload || {}),
-    headers: { 'Content-Type': 'application/json' }
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Context': contextId,
+      'X-Pair': `${contextId}-${Math.random()
+        .toString(36)
+        .slice(2, 10)}`
+    }
   })
   return res.json()
 }
