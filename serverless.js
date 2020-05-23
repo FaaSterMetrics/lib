@@ -50,9 +50,9 @@ function serverlessRouter (routerFn) {
   router.use(logger, handleErrors, hybridBodyParser())
   router.addRpcHandler = handler =>
     router.post('/call', async (ctx, next) => {
-      performance.mark('startRpcHandler')
+      performance.mark(`${helper.getFnName(ctx)}:startRpcHandler`)
       ctx.body = await handler(ctx.request.body)
-      performance.mark('endRpcHandler')
+      performance.mark(`${helper.getFnName(ctx)}:endRpcHandler`)
     })
 
   routerFn(router)

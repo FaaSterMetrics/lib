@@ -12,3 +12,7 @@ test('isGoogle', () => {
 test('prefix', () => {
   expect(helper.prefix()).toBeNull()
 })
+
+test('getFnName', () => {
+  expect(helper.getFnName()).toBe('unknownFnName')
+})
