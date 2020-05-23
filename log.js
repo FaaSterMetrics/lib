@@ -1,4 +1,5 @@
 const { performance, PerformanceObserver } = require('perf_hooks')
+const LIB_VERSION = require('./package.json').version
 
 function log (event) {
   process.stdout.write(
@@ -6,6 +7,7 @@ function log (event) {
       JSON.stringify({
         timestamp: new Date().getTime(),
         now: performance.now(),
+        version: LIB_VERSION,
         ...event
       }) +
       '\n'
