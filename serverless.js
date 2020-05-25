@@ -101,7 +101,7 @@ function serverlessRouter (routerFn) {
       router.post('/call', async (ctx, next) => {
         logRequestAndAttachContext(ctx)
         const end = ctx.lib.measure(
-          `rpcIn:${ctx.request.get('x-pair') || 'undefined'}`
+          `rpcIn:${ctx.request.get('x-pair') || 'undefined-x-pair'}`
         )
         ctx.body = await handler(ctx.request.body, ctx.lib)
         end()
