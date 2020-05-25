@@ -31,3 +31,18 @@ test('serverless.router', async () => {
   expect(responsePOST.status).toBe(200)
   expect(responsePOST.body).toMatchSnapshot()
 })
+
+test('serverless.event lambda', async () => {
+  jest.resetModules()
+  process.env.AWS_LAMBDA_FUNCTION_NAME = 'test'
+  const serverless2 = require('../serverless')
+  const { googleHandler } = serverless2.rpcHandler(async event => ({
+    ok: true,
+    event
+  }))
+  const response = await request(googleHandler)
+    .post('/test/call')
+    .send({ test: 'event3' })
+  expect(response.status).toBe(200)
+  expect(response.body).toMatchSnapshot()
+})

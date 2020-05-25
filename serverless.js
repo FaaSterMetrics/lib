@@ -37,9 +37,9 @@ function createContext (fn, contextId) {
   }
 }
 
-function logger (ctx, next) {
+function logRequestAndAttachContext (ctx) {
   const fn = helper.getFnName(ctx)
-  log(Object.assign({ fn }, _.pick(ctx, ['method', 'originalUrl', 'headers'])))
+  log({ fn, request: _.pick(ctx, ['method', 'originalUrl', 'headers']) })
   ctx.params.fn = fn
   const contextId =
     ctx.request.get('x-context') ||
@@ -81,10 +81,11 @@ function serverlessRouter (routerFn) {
     prefix: helper.prefix()
   })
 
-  router.use(logger, handleErrors, hybridBodyParser())
+  router.use(handleErrors, hybridBodyParser())
 
   const wrapHandler = (m, r, h) =>
     router[m](r, async (ctx, next) => {
+      logRequestAndAttachContext(ctx)
       const end = ctx.lib.measure(`${m}:${r}`)
       await h(ctx, next)
       end()
@@ -99,6 +100,7 @@ function serverlessRouter (routerFn) {
     all: (r, h) => wrapHandler('all', r, h),
     addRpcHandler: handler =>
       router.post('/call', async (ctx, next) => {
+        logRequestAndAttachContext(ctx)
         const end = ctx.lib.measure(
           `rpc_in:${ctx.request.get('x-pair') || 'undefined'}`
         )

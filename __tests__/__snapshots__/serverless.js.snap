@@ -9,6 +9,15 @@ Object {
 }
 `;
 
+exports[`serverless.event lambda 1`] = `
+Object {
+  "event": Object {
+    "test": "event3",
+  },
+  "ok": true,
+}
+`;
+
 exports[`serverless.router 1`] = `
 Object {
   "ok": true,

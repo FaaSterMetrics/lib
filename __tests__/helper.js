@@ -13,6 +13,16 @@ test('prefix', () => {
   expect(helper.prefix()).toBeNull()
 })
 
+test('prefix lambda', () => {
+  jest.resetModules()
+  process.env.AWS_LAMBDA_FUNCTION_NAME = 'test'
+  const helper2 = require('../helper')
+  expect(helper2.prefix()).toBe('/:fn')
+})
+
 test('getFnName', () => {
-  expect(helper.getFnName()).toBe('unknownFnName')
+  jest.resetModules()
+  process.env.AWS_LAMBDA_FUNCTION_NAME = 'test'
+  const helper2 = require('../helper')
+  expect(helper2.getFnName({ params: { fn: 'test' } })).toBe('test')
 })
