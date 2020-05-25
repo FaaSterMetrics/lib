@@ -47,7 +47,6 @@ function logRequestAndAttachContext (ctx) {
       .toString(36)
       .slice(2, 10)
   ctx.lib = createContext(fn, contextId)
-  return next()
 }
 
 async function handleErrors (ctx, next) {
