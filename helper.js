@@ -13,6 +13,11 @@ module.exports = {
     if (helper.isAzure) return '/api/:fn'
     return null
   },
+  generateRandomID: () => {
+    return Math.random()
+      .toString(36)
+      .slice(2, 10)
+  },
   loadExperiment: () => {
     try {
       return JSON.parse(

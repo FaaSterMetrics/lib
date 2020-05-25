@@ -19,9 +19,7 @@ module.exports = async (fn, contextId, payload) => {
     headers: {
       'Content-Type': 'application/json',
       'X-Context': contextId,
-      'X-Pair': `${contextId}-${Math.random()
-        .toString(36)
-        .slice(2, 10)}`
+      'X-Pair': `${contextId}-${helper.generateRandomID()}`
     }
   })
   return res.json()

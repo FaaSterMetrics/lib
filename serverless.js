@@ -41,11 +41,7 @@ function logRequestAndAttachContext (ctx) {
   const fn = helper.getFnName(ctx)
   log({ fn, request: _.pick(ctx, ['method', 'originalUrl', 'headers']) })
   ctx.params.fn = fn
-  const contextId =
-    ctx.request.get('x-context') ||
-    Math.random()
-      .toString(36)
-      .slice(2, 10)
+  const contextId = ctx.request.get('x-context') || helper.generateRandomID()
   ctx.lib = createContext(fn, contextId)
 }
 
