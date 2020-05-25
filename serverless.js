@@ -27,7 +27,7 @@ function createContext (fn, contextId) {
   return {
     log: e => log(Object.assign({ fn, contextId }, e || {})),
     call: (f, payload) => {
-      const end = measurement(`rpc_out:${f}`)
+      const end = measurement(`rpcOut:${f}`)
       call(f, Object.assign({ caller: fn }, payload || {}))
       end()
     },
@@ -101,7 +101,7 @@ function serverlessRouter (routerFn) {
       router.post('/call', async (ctx, next) => {
         logRequestAndAttachContext(ctx)
         const end = ctx.lib.measure(
-          `rpc_in:${ctx.request.get('x-pair') || 'undefined'}`
+          `rpcIn:${ctx.request.get('x-pair') || 'undefined'}`
         )
         ctx.body = await handler(ctx.request.body, ctx.lib)
         end()
