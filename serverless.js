@@ -28,7 +28,7 @@ function createContext (fn, contextId) {
     log: e => log(Object.assign({ fn, contextId }, e || {})),
     call: (f, payload) => {
       const end = measurement(`rpcOut:${f}`)
-      call(f, Object.assign({ caller: fn }, payload || {}))
+      call(f, contextId, Object.assign({ caller: fn }, payload || {}))
       end()
     },
     mark: m => performance.mark(`${fn}:${contextId}:${m}`),
