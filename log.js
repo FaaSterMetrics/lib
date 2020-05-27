@@ -19,6 +19,7 @@ new PerformanceObserver(list =>
     const perfName = perf.name.split(':')
     log({
       fn: perfName.shift(),
+      contextId: perfName.shift(),
       perf: { mark: perfName.join(':'), ...perf }
     })
   })
