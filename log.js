@@ -25,6 +25,6 @@ new PerformanceObserver(list =>
   })
 ).observe({ entryTypes: ['mark', 'measure', 'function'] })
 
-log({ coldstart: true })
+log({ fn: process.env.FAASTERMETRICS_FN_NAME, coldstart: true })
 
 module.exports = log

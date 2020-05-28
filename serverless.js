@@ -28,7 +28,11 @@ function createContext (fn, contextId) {
     log: e => log(Object.assign({ fn, contextId }, e || {})),
     call: (f, payload) => {
       const end = measurement(`rpcOut:${f}`)
-      const res = call(f, contextId, Object.assign({ caller: fn }, payload || {}))
+      const res = call(
+        f,
+        contextId,
+        Object.assign({ caller: fn }, payload || {})
+      )
       end()
       return res
     },

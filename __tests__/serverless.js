@@ -1,4 +1,6 @@
 /* eslint-env jest */
+process.env.FAASTERMETRICS_FN_NAME = 'testFn'
+
 const serverless = require('../serverless')
 const request = require('supertest')
 
