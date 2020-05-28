@@ -1,7 +1,7 @@
 const { performance, PerformanceObserver } = require('perf_hooks')
 const LIB_VERSION = require('./package.json').version
 
-process.env.FAASTERMETRICS_UNIQUE_FN_ID = require('crypto')
+const uniqueFnId = require('crypto')
   .randomBytes(32)
   .toString('hex')
 
@@ -13,7 +13,7 @@ function log (event) {
         now: performance.now(),
         version: LIB_VERSION,
         fn: {
-          id: process.env.FAASTERMETRICS_UNIQUE_FN_ID,
+          id: uniqueFnId,
           name: process.env.FAASTERMETRICS_FN_NAME
         },
         event
