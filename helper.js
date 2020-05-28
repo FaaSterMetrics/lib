@@ -27,13 +27,5 @@ module.exports = {
       return {}
     }
   },
-  getFnName: ctx => {
-    if (helper.isLambda || helper.isAzure) return ctx.params.fn
-    return (
-      process.env.K_SERVICE ||
-      process.env.FAASTERMETRICS_FN_NAME ||
-      'unknownFnName'
-    )
-  },
   ...helper
 }

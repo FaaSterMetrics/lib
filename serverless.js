@@ -12,47 +12,40 @@ const helper = require('./helper')
 const performance = require('./performance')
 const call = require('./call')
 
-function createContext (fn, contextId) {
+function createContext (contextId) {
   const measurement = m => {
-    performance.mark(`${fn}:${contextId}:start:${m}`)
+    performance.mark(`${contextId}:start:${m}`)
     return () => {
-      performance.mark(`${fn}:${contextId}:end:${m}`)
+      performance.mark(`${contextId}:end:${m}`)
       performance.measure(
-        `${fn}:${contextId}:${m}`,
-        `${fn}:${contextId}:start:${m}`,
-        `${fn}:${contextId}:end:${m}`
+        `${contextId}:${m}`,
+        `${contextId}:start:${m}`,
+        `${contextId}:end:${m}`
       )
     }
   }
   return {
-    log: e => log(Object.assign({ fn, contextId }, e || {})),
+    log: e => log(Object.assign({ contextId }, e || {})),
     call: (f, payload) => {
       const end = measurement(`rpcOut:${f}`)
-      const res = call(
-        f,
-        contextId,
-        Object.assign({ caller: fn }, payload || {})
-      )
+      const res = call(f, contextId, payload)
       end()
       return res
     },
-    mark: m => performance.mark(`${fn}:${contextId}:${m}`),
+    mark: m => performance.mark(`${contextId}:${m}`),
     measure: measurement,
     contextId
   }
 }
 
 function logRequestAndAttachContext (ctx) {
-  const fn = helper.getFnName(ctx)
   const contextId = ctx.request.get('x-context') || helper.generateRandomID()
   log({
-    fn,
     contextId,
     request: _.pick(ctx, ['method', 'originalUrl', 'headers'])
   })
-  ctx.params.fn = fn
   ctx.contextId = contextId
-  ctx.lib = createContext(fn, contextId)
+  ctx.lib = createContext(contextId)
 }
 
 async function handleErrors (ctx, next) {
