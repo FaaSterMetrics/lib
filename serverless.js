@@ -14,13 +14,13 @@ const call = require('./call')
 
 function createContext (contextId) {
   const measurement = m => {
-    performance.mark(`${contextId}:start:${m}`)
+    performance.mark(`${log.fnName}:${contextId}:start:${m}`)
     return () => {
-      performance.mark(`${contextId}:end:${m}`)
+      performance.mark(`${log.fnName}:${contextId}:end:${m}`)
       performance.measure(
-        `${contextId}:${m}`,
-        `${contextId}:start:${m}`,
-        `${contextId}:end:${m}`
+        `${log.fnName}:${contextId}:${m}`,
+        `${log.fnName}:${contextId}:start:${m}`,
+        `${log.fnName}:${contextId}:end:${m}`
       )
     }
   }
@@ -32,7 +32,7 @@ function createContext (contextId) {
       end()
       return res
     },
-    mark: m => performance.mark(`${contextId}:${m}`),
+    mark: m => performance.mark(`${log.fnName}:${contextId}:${m}`),
     measure: measurement,
     contextId
   }

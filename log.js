@@ -5,7 +5,7 @@ const uniqueFnId = require('crypto')
   .randomBytes(32)
   .toString('hex')
 
-const fnName = process.env.FAASTERMETRICS_FN_NAME
+const fnName = process.env.FAASTERMETRICS_FN_NAME || 'unknownFn'
 
 function log (event) {
   process.stdout.write(
@@ -27,6 +27,7 @@ function log (event) {
 new PerformanceObserver(list =>
   list.getEntries().forEach(perf => {
     const perfName = perf.name.split(':')
+    if (perfName.shift() !== fnName) return
     log({
       contextId: perfName.shift(),
       perf: { mark: perfName.join(':'), ...perf }
@@ -39,3 +40,4 @@ log({
 })
 
 module.exports = log
+module.exports.fnName = fnName
