@@ -11,6 +11,7 @@ test('serverless.event', async () => {
   }))
   const response = await request(googleHandler)
     .post('/call')
+    .set('X-Pair', '123456')
     .send({ test: 'event' })
   expect(response.status).toBe(200)
   expect(response.body).toMatchSnapshot()

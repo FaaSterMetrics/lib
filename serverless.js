@@ -12,15 +12,15 @@ const helper = require('./helper')
 const performance = require('./performance')
 const call = require('./call')
 
-function createContext (contextId) {
+function createContext (contextId, xPair) {
   const measurement = m => {
-    performance.mark(`${log.fnName}:${contextId}:start:${m}`)
+    performance.mark(`${log.fnName}:${contextId}:${xPair}:start:${m}`)
     return () => {
-      performance.mark(`${log.fnName}:${contextId}:end:${m}`)
+      performance.mark(`${log.fnName}:${contextId}:${xPair}:end:${m}`)
       performance.measure(
-        `${log.fnName}:${contextId}:${m}`,
-        `${log.fnName}:${contextId}:start:${m}`,
-        `${log.fnName}:${contextId}:end:${m}`
+        `${log.fnName}:${contextId}:${xPair}:${m}`,
+        `${log.fnName}:${contextId}:${xPair}:start:${m}`,
+        `${log.fnName}:${contextId}:${xPair}:end:${m}`
       )
     }
   }
@@ -40,12 +40,15 @@ function createContext (contextId) {
 
 function logRequestAndAttachContext (ctx) {
   const contextId = ctx.request.get('x-context') || helper.generateRandomID()
+  const xPair = ctx.request.get('x-pair') || 'undefined-x-pair'
   log({
     contextId,
+    xPair,
     request: _.pick(ctx, ['method', 'originalUrl', 'headers'])
   })
   ctx.contextId = contextId
-  ctx.lib = createContext(contextId)
+  ctx.xPair = xPair
+  ctx.lib = createContext(contextId, xPair)
 }
 
 async function handleErrors (ctx, next) {
@@ -99,9 +102,7 @@ function serverlessRouter (routerFn) {
     addRpcHandler: handler =>
       router.post('/call', async (ctx, next) => {
         logRequestAndAttachContext(ctx)
-        const end = ctx.lib.measure(
-          `rpcIn:${ctx.request.get('x-pair') || 'undefined-x-pair'}`
-        )
+        const end = ctx.lib.measure('rpcIn')
         ctx.body = await handler(ctx.request.body, ctx.lib)
         end()
       })

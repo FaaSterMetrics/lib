@@ -30,6 +30,7 @@ new PerformanceObserver(list =>
     if (perfName.shift() !== fnName) return
     log({
       contextId: perfName.shift(),
+      xPair: perfName.shift(),
       perf: { mark: perfName.join(':'), ...perf }
     })
   })
