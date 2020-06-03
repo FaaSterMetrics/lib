@@ -1,6 +1,6 @@
+require('./log') // log coldstart before other dependencies are loaded
+
 module.exports = {
-  log: require('./log'),
   helper: require('./helper'),
-  call: require('./call'),
   serverless: require('./serverless')
 }
