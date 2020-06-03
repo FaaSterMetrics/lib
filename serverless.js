@@ -18,7 +18,7 @@ function createContext (contextId, xPair) {
     return () => {
       performance.mark(`${log.fnName}:${contextId}:${xPair}:end:${m}`)
       performance.measure(
-        `${log.fnName}:${contextId}:${xPair}:${m}`,
+        `${log.fnName}:${contextId}:${xPair}:measure:${m}`,
         `${log.fnName}:${contextId}:${xPair}:start:${m}`,
         `${log.fnName}:${contextId}:${xPair}:end:${m}`
       )
