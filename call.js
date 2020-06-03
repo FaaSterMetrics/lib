@@ -11,6 +11,7 @@ const endpoints = {
 }
 
 module.exports = async (fn, contextId, payload) => {
+  if (!_.isObject(payload)) throw new Error('payload is not an object')
   const provider = _.get(experiment, `program.functions.${fn}.provider`)
   if (!endpoints[provider]) throw new Error('unknown provider')
   const res = await fetch(`${endpoints[provider]}/${fn}/call`, {
