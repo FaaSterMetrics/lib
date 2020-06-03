@@ -7,7 +7,8 @@ const experiment = helper.loadExperiment()
 
 const endpoints = {
   aws: process.env.AWS_LAMBDA_ENDPOINT,
-  google: process.env.GOOGLE_CLOUDFUNCTION_ENDPOINT
+  google: process.env.GOOGLE_CLOUDFUNCTION_ENDPOINT,
+  azure: process.env.AZURE_FUNCTIONS_ENDPOINT
 }
 
 module.exports = async (fn, contextId, payload) => {
