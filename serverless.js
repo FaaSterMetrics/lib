@@ -27,8 +27,9 @@ function createContext (contextId, xPair) {
   return {
     log: e => log(Object.assign({ contextId }, e || {})),
     call: (f, payload) => {
-      const end = measurement(`rpcOut:${f}`)
-      const res = call(f, contextId, payload)
+      const xPair = `${contextId}-${helper.generateRandomID()}`
+      const end = measurement(`rpcOut:${f}:${xPair}`)
+      const res = call(f, contextId, xPair, payload)
       end()
       return res
     },

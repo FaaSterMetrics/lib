@@ -11,7 +11,7 @@ const endpoints = {
   azure: process.env.AZURE_FUNCTIONS_ENDPOINT
 }
 
-module.exports = async (fn, contextId, payload) => {
+module.exports = async (fn, contextId, xPair, payload) => {
   if (!_.isObject(payload)) throw new Error('payload is not an object')
   const provider = _.get(experiment, `program.functions.${fn}.provider`)
   if (!endpoints[provider]) throw new Error('unknown provider')
@@ -21,7 +21,7 @@ module.exports = async (fn, contextId, payload) => {
     headers: {
       'Content-Type': 'application/json',
       'X-Context': contextId,
-      'X-Pair': `${contextId}-${helper.generateRandomID()}`
+      'X-Pair': xPair
     }
   })
   return res.json()
