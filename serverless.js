@@ -71,8 +71,11 @@ function hybridBodyParser () {
     ) {
       ctx.req.body = qs.parse(ctx.req.body, { allowDots: true })
     }
+
     ctx.request.body =
-      helper.isGoogle || helper.isAzure ? ctx.req.body : ctx.request.body
+      helper.isGoogle || helper.isAzure || helper.isTinyfaas
+        ? ctx.req.body
+        : ctx.request.body
     return bp(ctx, next)
   }
 }
@@ -113,6 +116,7 @@ function serverlessRouter (routerFn) {
   app.use(router.allowedMethods())
 
   return {
+    tinyfaasHandler: app.callback(),
     lambdaHandler: serverless(app),
     googleHandler: app.callback(),
     azureHandler: azure.createHandler(app.callback())

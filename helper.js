@@ -4,7 +4,8 @@ const path = require('path')
 const helper = {
   isLambda: !!process.env.AWS_LAMBDA_FUNCTION_NAME,
   isGoogle: !!process.env.K_SERVICE && !!process.env.K_REVISION,
-  isAzure: !!process.env.IS_AZURE_FUNCTION_APP
+  isAzure: !!process.env.IS_AZURE_FUNCTION_APP,
+  isTinyfaas: !!process.env.TINYFAAS
 }
 
 module.exports = {
