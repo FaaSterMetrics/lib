@@ -1,5 +1,8 @@
 const { performance, PerformanceObserver } = require('perf_hooks')
-const LIB_VERSION = require('./package.json').version
+
+const version = require('./package.json').version
+const deploymentId =
+  process.env.FAASTERMETRICS_DEPLOYMENT_ID || 'unknownDeploymentId'
 
 const uniqueFnId = require('crypto')
   .randomBytes(32)
@@ -13,7 +16,8 @@ function log (event) {
       JSON.stringify({
         timestamp: new Date().getTime(),
         now: performance.now(),
-        version: LIB_VERSION,
+        version,
+        deploymentId,
         fn: {
           id: uniqueFnId,
           name: fnName
