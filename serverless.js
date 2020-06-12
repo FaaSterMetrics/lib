@@ -11,8 +11,9 @@ const log = require('./log')
 const helper = require('./helper')
 const performance = require('./performance')
 const call = require('./call')
+const db = require('./db')
 
-function createContext (contextId, xPair) {
+function createContext (contextId, xPair, dbBindToMeasure) {
   const measurement = m => {
     performance.mark(`${log.fnName}:${contextId}:${xPair}:start:${m}`)
     return () => {
@@ -35,11 +36,13 @@ function createContext (contextId, xPair) {
     },
     mark: m => performance.mark(`${log.fnName}:${contextId}:${m}`),
     measure: measurement,
-    contextId
+    db: dbBindToMeasure(measurement),
+    contextId,
+    xPair
   }
 }
 
-function logRequestAndAttachContext (ctx) {
+function logRequestAndAttachContext (ctx, dbBindToMeasure) {
   const contextId = ctx.request.get('x-context') || helper.generateRandomID()
   const xPair = ctx.request.get('x-pair') || 'undefined-x-pair'
   log({
@@ -49,7 +52,7 @@ function logRequestAndAttachContext (ctx) {
   })
   ctx.contextId = contextId
   ctx.xPair = xPair
-  ctx.lib = createContext(contextId, xPair)
+  ctx.lib = createContext(contextId, xPair, dbBindToMeasure)
 }
 
 async function handleErrors (ctx, next) {
@@ -86,11 +89,15 @@ function serverlessRouter (routerFn) {
     prefix: helper.prefix()
   })
 
+  const dbBindToMeasure = db.connect(
+    process.env.REDIS_ENDPOINT ? 'redis' : 'memory'
+  )
+
   router.use(handleErrors, hybridBodyParser())
 
   const wrapHandler = (m, r, h) =>
     router[m](r, async (ctx, next) => {
-      logRequestAndAttachContext(ctx)
+      logRequestAndAttachContext(ctx, dbBindToMeasure)
       const end = ctx.lib.measure(`${m}:${r}`)
       await h(ctx, next)
       end()
@@ -105,7 +112,7 @@ function serverlessRouter (routerFn) {
     all: (r, h) => wrapHandler('all', r, h),
     addRpcHandler: handler =>
       router.post('/call', async (ctx, next) => {
-        logRequestAndAttachContext(ctx)
+        logRequestAndAttachContext(ctx, dbBindToMeasure)
         const end = ctx.lib.measure('rpcIn')
         ctx.body = await handler(ctx.request.body, ctx.lib)
         end()
