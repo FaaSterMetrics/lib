@@ -9,6 +9,12 @@ Object {
 }
 `;
 
+exports[`serverless.event db context 1`] = `
+Object {
+  "test": "db",
+}
+`;
+
 exports[`serverless.event lambda 1`] = `
 Object {
   "event": Object {

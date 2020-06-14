@@ -83,15 +83,18 @@ function hybridBodyParser () {
   }
 }
 
-function serverlessRouter (routerFn) {
+function serverlessRouter (options, routerFn) {
+  if (_.isFunction(options) && _.isUndefined(routerFn)) {
+    routerFn = options
+    options = {}
+  }
   const app = new Koa()
   const router = new Router({
     prefix: helper.prefix()
   })
 
-  const dbBindToMeasure = db.connect(
-    process.env.REDIS_ENDPOINT ? 'redis' : 'memory'
-  )
+  let dbBindToMeasure = () => undefined
+  if (options.db) dbBindToMeasure = db.connect(options.db)
 
   router.use(handleErrors, hybridBodyParser())
 
@@ -131,5 +134,8 @@ function serverlessRouter (routerFn) {
 }
 
 module.exports.router = serverlessRouter
-module.exports.rpcHandler = handler =>
-  serverlessRouter(r => r.addRpcHandler(handler))
+module.exports.rpcHandler = (options, handler) => {
+  if (_.isUndefined(handler))
+    return serverlessRouter(r => r.addRpcHandler(options))
+  return serverlessRouter(options, r => r.addRpcHandler(handler))
+}

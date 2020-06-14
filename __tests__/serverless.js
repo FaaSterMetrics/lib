@@ -49,3 +49,16 @@ test('serverless.event lambda', async () => {
   expect(response.status).toBe(200)
   expect(response.body).toMatchSnapshot()
 })
+
+test('serverless.event db context', async () => {
+  const { googleHandler } = serverless.rpcHandler(
+    { db: 'memory' },
+    async (event, ctx) => {
+      expect(ctx.db).toBeDefined()
+      return { test: 'db' }
+    }
+  )
+  const response = await request(googleHandler).post('/call')
+  expect(response.status).toBe(200)
+  expect(response.body).toMatchSnapshot()
+})
