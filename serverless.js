@@ -27,10 +27,10 @@ function createContext (contextId, xPair, dbBindToMeasure) {
   }
   return {
     log: e => log(Object.assign({ contextId }, e || {})),
-    call: (f, payload) => {
+    call: async (f, payload) => {
       const xPair = `${contextId}-${helper.generateRandomID()}`
       const end = measurement(`rpcOut:${f}:${xPair}`)
-      const res = call(f, contextId, xPair, payload)
+      const res = await call(f, contextId, xPair, payload)
       end()
       return res
     },
