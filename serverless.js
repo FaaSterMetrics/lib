@@ -98,17 +98,20 @@ function serverlessRouter (options, routerFn) {
 
   router.use(handleErrors, hybridBodyParser())
 
-  const wrapHandler = (m, r, h) =>
+  const wrapHandler = (m, r, h, x) =>
     router[m](r, async (ctx, next) => {
       logRequestAndAttachContext(ctx, dbBindToMeasure)
       const end = ctx.lib.measure(`${m}:${r}`)
-      await h(ctx, next)
+      await h(ctx, async () => {
+        !x || await x(ctx)
+        await next()
+      })
       end()
     })
 
   routerFn({
     get: (r, h) => wrapHandler('get', r, h),
-    post: (r, h) => wrapHandler('post', r, h),
+    post: (r, h, x) => wrapHandler('post', r, h, x),
     put: (r, h) => wrapHandler('put', r, h),
     patch: (r, h) => wrapHandler('patch', r, h),
     del: (r, h) => wrapHandler('del', r, h),
