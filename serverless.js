@@ -76,7 +76,10 @@ function hybridBodyParser () {
     }
 
     ctx.request.body =
-      helper.isGoogle || helper.isAzure || helper.isTinyfaas
+      helper.isGoogle ||
+      helper.isAzure ||
+      helper.isTinyfaas ||
+      helper.isOpenfaas
         ? ctx.req.body
         : ctx.request.body
     return bp(ctx, next)
@@ -127,6 +130,7 @@ function serverlessRouter (options, routerFn) {
 
   return {
     tinyfaasHandler: app.callback(),
+    openfaasHandler: app.callback(),
     lambdaHandler: serverless(app),
     googleHandler: app.callback(),
     azureHandler: azure.createHandler(app.callback())

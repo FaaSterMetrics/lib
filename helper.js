@@ -5,7 +5,8 @@ const helper = {
   isLambda: !!process.env.AWS_LAMBDA_FUNCTION_NAME,
   isGoogle: !!process.env.K_SERVICE && !!process.env.K_REVISION,
   isAzure: !!process.env.IS_AZURE_FUNCTION_APP,
-  isTinyfaas: !!process.env.TINYFAAS
+  isTinyfaas: !!process.env.TINYFAAS,
+  isOpenfaas: !!process.env.IS_OPENFAAS
 }
 
 module.exports = {
