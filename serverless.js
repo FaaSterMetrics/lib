@@ -131,6 +131,7 @@ function serverlessRouter (options, routerFn) {
   return {
     tinyfaasHandler: app.callback(),
     openfaasHandler: app.callback(),
+    openwhiskHandler: app.callback(),
     lambdaHandler: serverless(app),
     googleHandler: app.callback(),
     azureHandler: azure.createHandler(app.callback())
