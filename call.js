@@ -10,7 +10,8 @@ const endpoints = {
   google: process.env.GOOGLE_CLOUDFUNCTION_ENDPOINT,
   azure: process.env.AZURE_FUNCTIONS_ENDPOINT,
   tinyfaas: process.env.TINYFAAS_ENDPOINT,
-  openfaas: process.env.OPENFAAS_ENDPOINT
+  openfaas: process.env.OPENFAAS_ENDPOINT,
+  openwhisk: process.env.OPENWHISK_ENDPOINT
 }
 
 module.exports = async (fn, contextId, xPair, payload) => {

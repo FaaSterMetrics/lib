@@ -6,7 +6,8 @@ const helper = {
   isGoogle: !!process.env.K_SERVICE && !!process.env.K_REVISION,
   isAzure: !!process.env.IS_AZURE_FUNCTION_APP,
   isTinyfaas: !!process.env.TINYFAAS,
-  isOpenfaas: !!process.env.IS_OPENFAAS
+  isOpenfaas: !!process.env.IS_OPENFAAS,
+  isOpenwhisk: !!process.env.IS_OPENWHISK
 }
 
 module.exports = {
